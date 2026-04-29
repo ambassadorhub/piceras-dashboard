@@ -22,9 +22,9 @@ Melton Mowbray was purchased to get:
 - [ ] **Resolve In-House Care HMRC penalties** — needs resolution before dissolution
 - [ ] **In-House Care dissolution** — after HMRC resolved and Livefully licence obtained
 
-## In Progress
-- [ ] **Staff visa transfers** — In-House Care sponsored workers will move to Livefully sponsorship once Livefully's licence is approved
-- [ ] **Angela Broderick shares discussion** — retention at Oakham office
+## Key People
+- **Angela Broderick** — manager across both Northampton and Oakham sites
+- **Viola Frost** — real leader at Northampton office
 
 ## Done
 - [x] Melton Mowbray acquired (20 Oct 2025)

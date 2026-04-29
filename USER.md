@@ -36,8 +36,8 @@
 
 ## Key People
 
-- **Angela Broderick** — manages Livefully day-to-day at Oakham, Leicestershire office (4 years). Shares discussion ongoing for retention.
-- **Viola** — long-standing colleague at Northampton office (4–5 years), reliable, strong-willed, Caribbean background
+- **Angela Broderick** — manages both Livefully sites: Northampton and Oakham, Leicestershire (4 years). Shares discussion ongoing for retention.
+- **Viola Frost** — real leader at Northampton office. Long-standing colleague (4–5 years), reliable, strong-willed, Caribbean background
 - **Miggy** — former BuzzKit partner, now Non-Executive Director, no longer active — reason BuzzKit is on hold
 - **Russell** — project partner on Tech/SaaS/AI ventures
 
