@@ -24,7 +24,7 @@ Melton Mowbray was purchased to get:
 
 ## Key People
 - **Angela Broderick** — manager across both Northampton and Oakham sites
-- **Viola Frost** — real leader at Northampton office
+- **Viola Frost** — team leader at Northampton office
 
 ## Done
 - [x] Melton Mowbray acquired (20 Oct 2025)
