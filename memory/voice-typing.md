@@ -1,0 +1,12 @@
+## Voice Typing
+- **Tool:** Vibe Typer (installed 2026-04-26)
+- **Location:** `~/Applications/VibeTyper.AppImage`
+- **Status:** Auto-launches on login + keepalive every 5 minutes via cron
+- **Hotkey:** `Ctrl + Space` (hold to speak, release to stop)
+- **AI Rewrite:** Highlight text + precision shortcut to polish
+- **Free Tier:** 1,000 words/month
+- **Pro:** $10/month unlimited
+- **Purpose:** Faster text input across all apps (emails, code, documents, content)
+- **Autostart:** `~/.config/autostart/vibetyper.desktop`
+- **Keepalive:** `~/.local/bin/vibetyper-keepalive.sh` (checks every 5 min via crontab)
+- **Always Running:** I will monitor and relaunch if it stops without prompting Bass
