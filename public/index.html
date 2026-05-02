@@ -3,407 +3,551 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Piceras Command Dashboard</title>
+    <title>Piceras Command</title>
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="/icon-192.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #ffffff;
-            --surface: #ffffff;
-            --surface-2: #f8f9fa;
-            --accent: #00a884;
-            --accent-dim: rgba(0, 168, 132, 0.08);
-            --text: #1a1a2e;
-            --text-muted: #6b6b7b;
-            --border: #e8eaed;
-            --success: #00a884;
-            --warning: #e6a017;
-            --danger: #dc3545;
-            --info: #0d6efd;
+            --bg: #0f172a;
+            --bg-elevated: #1e293b;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --bg-hover: rgba(51, 65, 85, 0.5);
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --accent-dim: rgba(99, 102, 241, 0.15);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: rgba(148, 163, 184, 0.15);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
             height: 100%;
             background: var(--bg);
             color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             overflow: hidden;
+            -webkit-font-smoothing: antialiased;
         }
-        #app {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+
+        /* Auth Gate */
         #auth-gate {
             position: fixed;
             inset: 0;
-            background: var(--bg);
+            background: linear-gradient(135deg, var(--bg) 0%, #1a1f3a 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 10000;
         }
-        #auth-gate form {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: 16px;
+        .auth-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--border);
-            width: min(90%, 360px);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            width: min(90%, 400px);
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.4s ease-out;
         }
-        #auth-gate h2 {
-            margin-bottom: 1.5rem;
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .auth-logo {
             text-align: center;
-            font-size: 1.25rem;
+            margin-bottom: 2rem;
         }
-        #auth-gate input {
+        .auth-logo h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .auth-logo p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        .auth-input {
             width: 100%;
-            padding: 0.875rem 1rem;
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
             color: var(--text);
             font-size: 1rem;
+            font-family: inherit;
             margin-bottom: 1rem;
+            transition: var(--transition);
         }
-        #auth-gate input:focus { outline: none; border-color: var(--accent); }
-        #auth-gate button {
+        .auth-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-dim);
+        }
+        .auth-button {
             width: 100%;
-            padding: 0.875rem;
-            background: var(--accent);
-            color: #000;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: var(--radius-sm);
             font-size: 1rem;
             font-weight: 600;
+            font-family: inherit;
             cursor: pointer;
+            transition: var(--transition);
         }
-        #auth-gate .error {
+        .auth-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+        .auth-button:active {
+            transform: translateY(0);
+        }
+        .auth-error {
             color: var(--danger);
             font-size: 0.875rem;
-            margin-top: 0.5rem;
+            margin-top: 0.75rem;
             text-align: center;
             display: none;
+            animation: shake 0.4s ease;
         }
-        header {
-            background: var(--surface);
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        /* App Layout */
+        #app {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            display: none;
+        }
+        #app.visible {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Header */
+        .app-header {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
-            padding: 0.75rem 1rem;
+            padding: 0.875rem 1.25rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
+            z-index: 100;
         }
-        .logo { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
-        .logo span { color: var(--text); font-weight: 400; }
-        .entity-selector {
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0.4rem 0.75rem;
-            color: var(--text);
-            font-size: 0.875rem;
-        }
-        .tab-bar {
-            display: flex;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .tab-bar::-webkit-scrollbar { display: none; }
-        .tab {
-            flex: 1;
-            min-width: 80px;
-            padding: 0.875rem 0.5rem;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-            cursor: pointer;
-            position: relative;
-            white-space: nowrap;
-        }
-        .tab.active { color: var(--accent); }
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 20%;
-            right: 20%;
-            height: 2px;
-            background: var(--accent);
-            border-radius: 2px;
-        }
-        .tab .icon {
-            display: block;
-            font-size: 1.25rem;
-            margin-bottom: 0.25rem;
-        }
-        main {
-            flex: 1;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 1rem;
-        }
-        .section { display: none; }
-        .section.active { display: block; }
-        .agent-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 0.75rem;
-        }
-        .agent-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1rem;
-            transition: border-color 0.2s;
-        }
-        .agent-card:hover { border-color: var(--accent-dim); }
-        .agent-header {
+        .brand {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            margin-bottom: 0.75rem;
         }
-        .agent-avatar {
-            width: 40px;
-            height: 40px;
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.25rem;
-            flex-shrink: 0;
         }
-        .agent-avatar.ollie { background: var(--accent-dim); }
-        .agent-avatar.quinn { background: rgba(255, 184, 0, 0.15); }
-        .agent-avatar.nova { background: rgba(52, 152, 219, 0.15); }
-        .agent-info { flex: 1; }
-        .agent-name { font-weight: 600; font-size: 0.9375rem; }
-        .agent-role { font-size: 0.75rem; color: var(--text-muted); }
-        .status-dot {
-            width: 8px;
-            height: 8px;
+        .brand-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+        .brand-text span {
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .entity-pill {
+            padding: 0.5rem 1rem;
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .entity-pill:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        /* Navigation */
+        .nav-rail {
+            display: none;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.5rem;
+            gap: 0.25rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .nav-rail::-webkit-scrollbar { display: none; }
+        .nav-item {
+            flex: 1;
+            min-width: 72px;
+            padding: 0.75rem 0.5rem;
+            background: none;
+            border: none;
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            font-size: 0.6875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.375rem;
+            transition: var(--transition);
+            position: relative;
+            white-space: nowrap;
+        }
+        .nav-item:hover {
+            background: var(--bg-hover);
+            color: var(--text-secondary);
+        }
+        .nav-item.active {
+            background: var(--accent-dim);
+            color: var(--accent-light);
+        }
+        .nav-item .icon {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        /* Main Content */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding: 1.25rem;
+        }
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .section.active {
+            display: block;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+        .card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: var(--shadow);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .card-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Agent Cards */
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .agent-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .agent-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        .agent-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .agent-avatar::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            flex-shrink: 0;
+            border: 2px solid var(--bg-elevated);
         }
-        .status-dot.online { background: var(--success); box-shadow: 0 0 6px var(--success); }
-        .status-dot.busy { background: var(--warning); }
-        .status-dot.idle { background: var(--text-muted); }
-        .agent-task {
+        .agent-avatar.online::after { background: var(--success); box-shadow: 0 0 6px var(--success); }
+        .agent-avatar.busy::after { background: var(--warning); }
+        .agent-avatar.idle::after { background: var(--text-muted); }
+        .agent-info { flex: 1; }
+        .agent-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.125rem;
+        }
+        .agent-role {
             font-size: 0.8125rem;
             color: var(--text-muted);
-            margin-top: 0.5rem;
-            padding-top: 0.5rem;
-            border-top: 1px solid var(--border);
         }
         .agent-model {
             display: inline-block;
-            margin-top: 0.5rem;
-            padding: 0.2rem 0.5rem;
-            background: var(--surface-2);
-            border-radius: 6px;
+            padding: 0.25rem 0.625rem;
+            background: var(--bg-hover);
+            border-radius: 100px;
             font-size: 0.6875rem;
-            color: var(--text-muted);
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-top: 0.75rem;
         }
-        .skills-search {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: var(--surface);
+        .agent-task {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border);
+            margin-top: 0.75rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        .stat-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text);
-            font-size: 0.9375rem;
-            margin-bottom: 1rem;
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            transition: var(--transition);
         }
-        .skills-search:focus { outline: none; border-color: var(--accent); }
-        .skills-categories {
-            display: flex;
-            gap: 0.5rem;
-            overflow-x: auto;
-            margin-bottom: 1rem;
-            -webkit-overflow-scrolling: touch;
+        .stat-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
         }
-        .skill-category {
-            padding: 0.4rem 0.875rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-light);
+            line-height: 1;
+            margin-bottom: 0.375rem;
+        }
+        .stat-label {
             font-size: 0.8125rem;
             color: var(--text-muted);
-            cursor: pointer;
-            white-space: nowrap;
         }
-        .skill-category.active {
-            background: var(--accent);
-            color: #000;
-            border-color: var(--accent);
+        .stat-change {
+            font-size: 0.75rem;
+            color: var(--success);
+            margin-top: 0.25rem;
         }
-        .skill-list { display: flex; flex-direction: column; gap: 0.5rem; }
-        .skill-item {
-            background: var(--surface);
+
+        /* Kanban */
+        .kanban-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .kanban-column {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 0.875rem 1rem;
+            border-radius: var(--radius);
+            padding: 1rem;
+            min-height: 400px;
+        }
+        .kanban-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
         }
-        .skill-item-name { font-weight: 500; font-size: 0.9375rem; }
-        .skill-item-desc { font-size: 0.8125rem; color: var(--text-muted); margin-top: 0.125rem; }
-        .skill-trigger {
-            padding: 0.4rem 0.875rem;
-            background: var(--accent-dim);
-            color: var(--accent);
-            border: none;
-            border-radius: 8px;
-            font-size: 0.8125rem;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        .kanban-board {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 0.75rem;
-        }
-        .kanban-column {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 0.75rem;
-            min-height: 200px;
-        }
-        .kanban-column-header {
-            font-size: 0.75rem;
+        .kanban-title {
+            font-size: 0.875rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: var(--text-muted);
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            color: var(--text-secondary);
         }
         .kanban-count {
-            background: var(--surface-2);
-            padding: 0.125rem 0.5rem;
-            border-radius: 10px;
-            font-size: 0.6875rem;
+            background: var(--bg-hover);
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
         }
         .kanban-card {
-            background: var(--surface-2);
+            background: var(--bg-hover);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
             cursor: grab;
+            transition: var(--transition);
         }
-        .kanban-card:active { cursor: grabbing; }
-        .kanban-card-title { font-size: 0.875rem; font-weight: 500; margin-bottom: 0.375rem; }
+        .kanban-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-1px);
+        }
+        .kanban-card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+        .kanban-card-title {
+            font-size: 0.9375rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
         .kanban-card-meta {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 0.6875rem;
-            color: var(--text-muted);
+            flex-wrap: wrap;
         }
-        .entity-tag {
-            padding: 0.125rem 0.375rem;
-            border-radius: 4px;
-            font-size: 0.625rem;
+        .tag {
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.6875rem;
             font-weight: 600;
             text-transform: uppercase;
         }
-        .entity-tag.livefully { background: var(--accent-dim); color: var(--accent); }
-        .entity-tag.ulo { background: rgba(52, 152, 219, 0.15); color: var(--info); }
-        .entity-tag.buzzkit { background: rgba(255, 184, 0, 0.15); color: var(--warning); }
-        .entity-tag.unison { background: rgba(155, 89, 182, 0.15); color: #9b59b6; }
-        .priority-dot { width: 6px; height: 6px; border-radius: 50%; }
-        .priority-dot.p0 { background: var(--danger); }
-        .priority-dot.p1 { background: var(--warning); }
-        .priority-dot.p2 { background: var(--info); }
-        .usage-chart-container {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            height: 200px;
+        .tag-livefully { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .tag-buzzkit { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .tag-unison { background: rgba(59, 130, 246, 0.15); color: var(--info); }
+        .tag-system { background: rgba(99, 102, 241, 0.15); color: var(--accent-light); }
+        .priority-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .priority-p0 { background: var(--danger); }
+        .priority-p1 { background: var(--warning); }
+        .priority-p2 { background: var(--info); }
+
+        /* Chat Interface */
+        .chat-container {
             display: flex;
-            align-items: flex-end;
-            justify-content: space-around;
-            gap: 0.5rem;
-        }
-        .usage-bar {
-            flex: 1;
-            max-width: 40px;
-            background: var(--accent);
-            border-radius: 4px 4px 0 0;
-            min-height: 4px;
-            position: relative;
-            transition: height 0.3s ease;
-        }
-        .usage-bar:hover { background: #00e6b8; }
-        .usage-bar-label {
-            position: absolute;
-            bottom: -1.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.625rem;
-            color: var(--text-muted);
-            white-space: nowrap;
-        }
-        .usage-summary {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-        .usage-stat {
-            background: var(--surface);
+            height: calc(100vh - 220px);
+            min-height: 400px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1rem;
-            text-align: center;
-        }
-        .usage-stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
-        .usage-stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
-        .telegram-container {
-            display: flex;
-            height: calc(100vh - 200px);
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: var(--radius);
             overflow: hidden;
         }
-        .telegram-chats {
+        .chat-sidebar {
             width: 280px;
             border-right: 1px solid var(--border);
-            overflow-y: auto;
             display: none;
+            flex-direction: column;
         }
-        @media (min-width: 768px) { .telegram-chats { display: block; } }
-        .telegram-chat-item {
-            padding: 0.75rem 1rem;
+        @media (min-width: 768px) { .chat-sidebar { display: flex; } }
+        .chat-sidebar-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+        }
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .chat-item {
+            padding: 0.875rem 1.25rem;
             display: flex;
             align-items: center;
             gap: 0.75rem;
             cursor: pointer;
+            transition: var(--transition);
             border-bottom: 1px solid var(--border);
         }
-        .telegram-chat-item:hover, .telegram-chat-item.active { background: var(--surface-2); }
-        .telegram-chat-avatar {
+        .chat-item:hover, .chat-item.active {
+            background: var(--bg-hover);
+        }
+        .chat-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: var(--accent-dim);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -411,279 +555,552 @@
             font-size: 0.875rem;
             flex-shrink: 0;
         }
-        .telegram-chat-info { flex: 1; min-width: 0; }
-        .telegram-chat-name { font-weight: 500; font-size: 0.875rem; }
-        .telegram-chat-preview { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .telegram-messages { flex: 1; display: flex; flex-direction: column; }
-        .messages-list {
+        .chat-info { flex: 1; min-width: 0; }
+        .chat-name { font-weight: 500; font-size: 0.9375rem; }
+        .chat-preview { font-size: 0.8125rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .messages-area {
             flex: 1;
             overflow-y: auto;
-            padding: 1rem;
+            padding: 1.25rem;
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
         }
-        .message-bubble {
-            max-width: 75%;
-            padding: 0.625rem 0.875rem;
-            border-radius: 12px;
-            font-size: 0.875rem;
-            line-height: 1.4;
+        .message {
+            max-width: 80%;
+            padding: 0.875rem 1.125rem;
+            border-radius: 14px;
+            font-size: 0.9375rem;
+            line-height: 1.5;
+            animation: messageIn 0.3s ease;
         }
-        .message-bubble.incoming {
-            background: var(--surface-2);
+        @keyframes messageIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message.incoming {
+            background: var(--bg-hover);
             align-self: flex-start;
             border-bottom-left-radius: 4px;
         }
-        .message-bubble.outgoing {
-            background: var(--accent);
-            color: #000;
+        .message.outgoing {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: white;
             align-self: flex-end;
             border-bottom-right-radius: 4px;
         }
-        .message-time { font-size: 0.6875rem; opacity: 0.7; margin-top: 0.25rem; }
-        .telegram-input {
-            display: flex;
-            gap: 0.5rem;
-            padding: 0.75rem;
-            border-top: 1px solid var(--border);
+        .message-time {
+            font-size: 0.6875rem;
+            opacity: 0.7;
+            margin-top: 0.25rem;
         }
-        .telegram-input input {
+        .chat-input-area {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.75rem;
+        }
+        .chat-input {
             flex: 1;
-            padding: 0.625rem 0.875rem;
-            background: var(--surface-2);
+            padding: 0.75rem 1rem;
+            background: var(--bg-hover);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 100px;
             color: var(--text);
             font-size: 0.9375rem;
+            font-family: inherit;
+            transition: var(--transition);
         }
-        .telegram-input input:focus { outline: none; border-color: var(--accent); }
-        .telegram-input button {
-            padding: 0.625rem 1rem;
-            background: var(--accent);
-            color: #000;
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .chat-send {
+            padding: 0.75rem 1.25rem;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 100px;
             font-weight: 600;
             cursor: pointer;
+            transition: var(--transition);
         }
-        .openclaw-chat { display: flex; flex-direction: column; height: calc(100vh - 200px); }
-        .openclaw-agent-selector {
+        .chat-send:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+        .chat-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Skills */
+        .skills-header {
             display: flex;
-            gap: 0.5rem;
-            overflow-x: auto;
-            padding-bottom: 0.75rem;
-            margin-bottom: 0.75rem;
-            -webkit-overflow-scrolling: touch;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
         }
-        .openclaw-agent-chip {
-            padding: 0.375rem 0.875rem;
-            background: var(--surface);
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.875rem 1.25rem;
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 20px;
+            border-radius: var(--radius);
+            color: var(--text);
+            font-size: 0.9375rem;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-dim);
+        }
+        .skills-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .skill-row {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+        .skill-row:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateX(4px);
+        }
+        .skill-info { flex: 1; }
+        .skill-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .skill-desc {
             font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+        .skill-action {
+            padding: 0.5rem 1rem;
+            background: var(--accent-dim);
+            color: var(--accent-light);
+            border: none;
+            border-radius: 100px;
+            font-size: 0.8125rem;
+            font-weight: 600;
             cursor: pointer;
+            transition: var(--transition);
+        }
+        .skill-action:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Usage Chart */
+        .chart-container {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            height: 280px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .chart-bar {
+            flex: 1;
+            max-width: 50px;
+            background: linear-gradient(to top, var(--accent) 0%, var(--accent-light) 100%);
+            border-radius: 8px 8px 0 0;
+            min-height: 4px;
+            position: relative;
+            transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .chart-bar:hover {
+            filter: brightness(1.2);
+        }
+        .chart-label {
+            position: absolute;
+            bottom: -1.75rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.6875rem;
+            color: var(--text-muted);
             white-space: nowrap;
         }
-        .openclaw-agent-chip.active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+        /* Bottom Nav Mobile */
         .bottom-nav {
-            display: none;
+            display: flex;
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: var(--surface);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
             border-top: 1px solid var(--border);
             padding: 0.5rem 0;
             z-index: 100;
         }
+        .bottom-nav .nav-item {
+            flex: 1;
+            min-width: 0;
+        }
+        @media (min-width: 641px) {
+            .nav-rail { display: flex; }
+            .bottom-nav { display: none; }
+        }
         @media (max-width: 640px) {
-            .bottom-nav { display: flex; }
-            .tab-bar { display: none; }
-            main { padding-bottom: 80px; }
-            .telegram-container, .openclaw-chat { height: calc(100vh - 140px); }
+            .nav-rail { display: none; }
+            .content-area { padding-bottom: 90px; }
+            .chat-container { height: calc(100vh - 160px); }
         }
-        .bottom-nav .tab { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; padding: 0.375rem 0; }
-        .bottom-nav .tab .icon { margin-bottom: 0; }
-        .skeleton {
-            background: linear-gradient(90deg, var(--surface) 25%, var(--surface-2) 50%, var(--surface) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 8px;
+
+        /* Loading */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
         }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        .offline-banner {
-            background: var(--warning);
-            color: #000;
-            text-align: center;
-            padding: 0.5rem;
-            font-size: 0.8125rem;
-            font-weight: 500;
-            display: none;
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
-        .toast {
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Toast */
+        .toast-container {
             position: fixed;
             bottom: 100px;
             left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--surface-2);
-            color: var(--text);
-            padding: 0.75rem 1.25rem;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            font-size: 0.875rem;
-            opacity: 0;
-            transition: all 0.3s ease;
+            transform: translateX(-50%);
             z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
             pointer-events: none;
         }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast {
+            background: var(--bg-elevated);
+            color: var(--text);
+            padding: 0.875rem 1.5rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            font-size: 0.9375rem;
+            box-shadow: var(--shadow-lg);
+            animation: toastIn 0.3s ease, toastOut 0.3s ease 3s forwards;
+            pointer-events: auto;
+        }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
     <div id="auth-gate">
-        <form id="auth-form">
-            <h2>Piceras Command</h2>
-            <input type="password" id="auth-password" placeholder="Enter password" autocomplete="current-password">
-            <button type="submit">Enter Dashboard</button>
-            <div class="error" id="auth-error">Incorrect password</div>
-        </form>
+        <div class="auth-card">
+            <div class="auth-logo">
+                <h1>Piceras Command</h1>
+                <p>Enter password to access dashboard</p>
+            </div>
+            <form id="auth-form">
+                <input type="password" class="auth-input" id="auth-password" placeholder="Password" autocomplete="current-password">
+                <button type="submit" class="auth-button">Enter Dashboard</button>
+                <div class="auth-error" id="auth-error">Incorrect password</div>
+            </form>
+        </div>
     </div>
-    <div id="app" style="display:none;">
-        <div class="offline-banner" id="offline-banner">Offline mode - some features unavailable</div>
-        <header>
-            <div class="logo">Piceras<span>Command</span></div>
-            <select class="entity-selector" id="entity-selector">
-                <option value="all">All Entities</option>
-                <option value="livefully">Livefully</option>
-                <option value="ulo">ULO Properties</option>
-                <option value="buzzkit">BuzzKit</option>
-                <option value="unison">Unison Healthcare</option>
-            </select>
+
+    <div id="app">
+        <header class="app-header">
+            <div class="brand">
+                <div class="brand-icon">ℹ</div>
+                <div class="brand-text">Piceras<span>Command</span></div>
+            </div>
+            <div class="header-actions">
+                <select class="entity-pill" id="entity-selector">
+                    <option value="all">All Entities</option>
+                    <option value="livefully">Livefully</option>
+                    <option value="ulo">ULO Properties</option>
+                    <option value="buzzkit">BuzzKit</option>
+                    <option value="unison">Unison Healthcare</option>
+                </select>
+            </div>
         </header>
-        <nav class="tab-bar">
-            <button class="tab active" data-section="agents"><span class="icon">&#128126;</span> Agents</button>
-            <button class="tab" data-section="skills"><span class="icon">&#128736;</span> Skills</button>
-            <button class="tab" data-section="projects"><span class="icon">&#128188;</span> Projects</button>
-            <button class="tab" data-section="usage"><span class="icon">&#128200;</span> Usage</button>
-            <button class="tab" data-section="telegram"><span class="icon">&#9993;</span> Telegram</button>
-            <button class="tab" data-section="openclaw"><span class="icon">&#129302;</span> OpenClaw</button>
+
+        <nav class="nav-rail">
+            <button class="nav-item active" data-section="agents">
+                <span class="icon">ኁ26;</span>Agents
+            </button>
+            <button class="nav-item" data-section="skills">
+                <span class="icon">ኇ36;</span>Skills
+            </button>
+            <button class="nav-item" data-section="projects">
+                <span class="icon">ኁ88;</span>Projects
+            </button>
+            <button class="nav-item" data-section="usage">
+                <span class="icon">ኂ00;</span>Usage
+            </button>
+            <button class="nav-item" data-section="telegram">
+                <span class="icon">馓;</span>Telegram
+            </button>
+            <button class="nav-item" data-section="messages">
+                <span class="icon">ኁ72;</span>Messages
+            </button>
         </nav>
-        <main>
+
+        <main class="content-area">
+            <!-- Agents Section -->
             <section class="section active" id="agents">
-                <div class="agent-grid" id="agent-grid">
-                    <div class="skeleton" style="height:120px;"></div>
-                    <div class="skeleton" style="height:120px;"></div>
-                    <div class="skeleton" style="height:120px;"></div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-agents">--</div>
+                        <div class="stat-label">Active Agents</div>
+                        <div class="stat-change">+2 today</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-tasks">--</div>
+                        <div class="stat-label">Tasks Today</div>
+                        <div class="stat-change">+12 today</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-tokens">--</div>
+                        <div class="stat-label">Tokens Used</div>
+                        <div class="stat-change">+2.4K today</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-cost">--</div>
+                        <div class="stat-label">Est. Cost</div>
+                        <div class="stat-change">$0.84 today</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Team</div>
+                            <div class="card-subtitle">Active AI agents</div>
+                        </div>
+                    </div>
+                    <div class="agents-grid" id="agent-grid">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
                 </div>
             </section>
+
+            <!-- Skills Section -->
             <section class="section" id="skills">
-                <input type="text" class="skills-search" id="skills-search" placeholder="Search skills...">
-                <div class="skills-categories">
-                    <button class="skill-category active" data-cat="all">All</button>
-                    <button class="skill-category" data-cat="coding">Coding</button>
-                    <button class="skill-category" data-cat="content">Content</button>
-                    <button class="skill-category" data-cat="compliance">Compliance</button>
-                    <button class="skill-category" data-cat="finance">Finance</button>
-                </div>
-                <div class="skill-list" id="skill-list">
-                    <div class="skeleton" style="height:60px;"></div>
-                    <div class="skeleton" style="height:60px;"></div>
-                    <div class="skeleton" style="height:60px;"></div>
+                <div class="card">
+                    <div class="skills-header">
+                        <input type="text" class="search-input" id="skills-search" placeholder="Search skills...">
+                    </div>
+                    <div class="skills-list" id="skill-list">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
                 </div>
             </section>
+
+            <!-- Projects Section -->
             <section class="section" id="projects">
-                <div class="kanban-board" id="kanban-board">
+                <div class="kanban-container" id="kanban-board">
                     <div class="kanban-column">
-                        <div class="kanban-column-header">Backlog <span class="kanban-count">0</span></div>
+                        <div class="kanban-header">
+                            <span class="kanban-title">Backlog</span>
+                            <span class="kanban-count" id="count-backlog">0</span>
+                        </div>
                         <div class="kanban-cards" data-status="backlog"></div>
                     </div>
                     <div class="kanban-column">
-                        <div class="kanban-column-header">In Progress <span class="kanban-count">0</span></div>
+                        <div class="kanban-header">
+                            <span class="kanban-title">In Progress</span>
+                            <span class="kanban-count" id="count-inprogress">0</span>
+                        </div>
                         <div class="kanban-cards" data-status="inprogress"></div>
                     </div>
                     <div class="kanban-column">
-                        <div class="kanban-column-header">Blocked <span class="kanban-count">0</span></div>
+                        <div class="kanban-header">
+                            <span class="kanban-title">Blocked</span>
+                            <span class="kanban-count" id="count-blocked">0</span>
+                        </div>
                         <div class="kanban-cards" data-status="blocked"></div>
                     </div>
                     <div class="kanban-column">
-                        <div class="kanban-column-header">Done <span class="kanban-count">0</span></div>
+                        <div class="kanban-header">
+                            <span class="kanban-title">Done</span>
+                            <span class="kanban-count" id="count-done">0</span>
+                        </div>
                         <div class="kanban-cards" data-status="done"></div>
                     </div>
                 </div>
             </section>
+
+            <!-- Usage Section -->
             <section class="section" id="usage">
-                <div class="usage-summary">
-                    <div class="usage-stat"><div class="usage-stat-value" id="total-tokens">--</div><div class="usage-stat-label">Tokens Today</div></div>
-                    <div class="usage-stat"><div class="usage-stat-value" id="total-cost">--</div><div class="usage-stat-label">Est. Cost</div></div>
-                    <div class="usage-stat"><div class="usage-stat-value" id="api-calls">--</div><div class="usage-stat-label">API Calls</div></div>
-                    <div class="usage-stat"><div class="usage-stat-value" id="active-agents">--</div><div class="usage-stat-label">Active Agents</div></div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="usage-tokens">--</div>
+                        <div class="stat-label">Tokens Today</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="usage-cost">--</div>
+                        <div class="stat-label">Est. Cost ($)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="usage-calls">--</div>
+                        <div class="stat-label">API Calls</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="usage-uptime">99.9%</div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
                 </div>
-                <div class="usage-chart-container" id="usage-chart">
-                    <div class="usage-bar" style="height:60%"><span class="usage-bar-label">Mon</span></div>
-                    <div class="usage-bar" style="height:80%"><span class="usage-bar-label">Tue</span></div>
-                    <div class="usage-bar" style="height:45%"><span class="usage-bar-label">Wed</span></div>
-                    <div class="usage-bar" style="height:90%"><span class="usage-bar-label">Thu</span></div>
-                    <div class="usage-bar" style="height:30%"><span class="usage-bar-label">Fri</span></div>
-                    <div class="usage-bar" style="height:55%"><span class="usage-bar-label">Sat</span></div>
-                    <div class="usage-bar" style="height:20%"><span class="usage-bar-label">Sun</span></div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Weekly Usage</div>
+                    </div>
+                    <div class="chart-container" id="usage-chart">
+                        <div class="chart-bar" style="height:45%"><span class="chart-label">Mon</span></div>
+                        <div class="chart-bar" style="height:65%"><span class="chart-label">Tue</span></div>
+                        <div class="chart-bar" style="height:35%"><span class="chart-label">Wed</span></div>
+                        <div class="chart-bar" style="height:80%"><span class="chart-label">Thu</span></div>
+                        <div class="chart-bar" style="height:55%"><span class="chart-label">Fri</span></div>
+                        <div class="chart-bar" style="height:40%"><span class="chart-label">Sat</span></div>
+                        <div class="chart-bar" style="height:25%"><span class="chart-label">Sun</span></div>
+                    </div>
                 </div>
             </section>
+
+            <!-- Telegram Section -->
             <section class="section" id="telegram">
-                <div class="telegram-container">
-                    <div class="telegram-chats" id="telegram-chats">
-                        <div class="telegram-chat-item active">
-                            <div class="telegram-chat-avatar">B</div>
-                            <div class="telegram-chat-info">
-                                <div class="telegram-chat-name">Bass</div>
-                                <div class="telegram-chat-preview">Tap to load messages...</div>
+                <div class="chat-container">
+                    <div class="chat-sidebar">
+                        <div class="chat-sidebar-header">Chats</div>
+                        <div class="chat-list" id="telegram-chats">
+                            <div class="chat-item active" data-id="7550244056">
+                                <div class="chat-avatar">B</div>
+                                <div class="chat-info">
+                                    <div class="chat-name">Bass</div>
+                                    <div class="chat-preview">Tap to load messages...</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="telegram-messages">
-                        <div class="messages-list" id="telegram-messages">
-                            <div class="message-bubble incoming">
-                                Messages will appear here
-                                <div class="message-time">Now</div>
+                    <div class="chat-main">
+                        <div class="messages-area" id="telegram-messages">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">馓</div>
+                                <p>Select a chat to view messages</p>
                             </div>
                         </div>
-                        <div class="telegram-input">
-                            <input type="text" id="telegram-input" placeholder="Message...">
-                            <button id="telegram-send">Send</button>
+                        <div class="chat-input-area">
+                            <input type="text" class="chat-input" id="telegram-input" placeholder="Type a message...">
+                            <button class="chat-send" id="telegram-send">Send</button>
                         </div>
                     </div>
                 </div>
             </section>
-            <section class="section" id="openclaw">
-                <div class="openclaw-chat">
-                    <div class="openclaw-agent-selector" id="openclaw-agents">
-                        <button class="openclaw-agent-chip active" data-agent="ollie">Ollie</button>
-                        <button class="openclaw-agent-chip" data-agent="quinn">Quinn</button>
-                        <button class="openclaw-agent-chip" data-agent="nova">Nova</button>
-                    </div>
-                    <div class="messages-list" id="openclaw-messages">
-                        <div class="message-bubble incoming">
-                            Welcome to OpenClaw Command. How can I help?
-                            <div class="message-time">Now</div>
+
+            <!-- Messages Section (Direct to Ollie) -->
+            <section class="section" id="messages">
+                <div class="chat-container">
+                    <div class="chat-main">
+                        <div class="chat-sidebar" style="display:flex; width: 200px;">
+                            <div class="chat-sidebar-header">Agents</div>
+                            <div class="chat-list">
+                                <div class="chat-item active" data-agent="ollie">
+                                    <div class="chat-avatar" style="font-size:1.2rem;">ኔ17;</div>
+                                    <div class="chat-info">
+                                        <div class="chat-name">Ollie</div>
+                                        <div class="chat-preview">Online</div>
+                                    </div>
+                                </div>
+                                <div class="chat-item" data-agent="quinn">
+                                    <div class="chat-avatar" style="font-size:1.2rem;">ኂ20;</div>
+                                    <div class="chat-info">
+                                        <div class="chat-name">Quinn</div>
+                                        <div class="chat-preview">Online</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="telegram-input">
-                        <input type="text" id="openclaw-input" placeholder="Ask OpenClaw...">
-                        <button id="openclaw-send">Send</button>
+                        <div class="chat-main">
+                            <div class="messages-area" id="messages-area">
+                                <div class="message incoming">
+                                    Hi Bass, I'm connected directly through the dashboard now.
+                                    <div class="message-time">Now</div>
+                                </div>
+                            </div>
+                            <div class="chat-input-area">
+                                <input type="text" class="chat-input" id="message-input" placeholder="Message Ollie...">
+                                <button class="chat-send" id="message-send">Send</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
         </main>
+
         <nav class="bottom-nav">
-            <button class="tab active" data-section="agents"><span class="icon">&#128126;</span> Agents</button>
-            <button class="tab" data-section="skills"><span class="icon">&#128736;</span> Skills</button>
-            <button class="tab" data-section="projects"><span class="icon">&#128188;</span> Projects</button>
-            <button class="tab" data-section="usage"><span class="icon">&#128200;</span> Usage</button>
-            <button class="tab" data-section="telegram"><span class="icon">&#9993;</span> Telegram</button>
-            <button class="tab" data-section="openclaw"><span class="icon">&#129302;</span> Chat</button>
+            <button class="nav-item active" data-section="agents">
+                <span class="icon">ኁ26;</span>Agents
+            </button>
+            <button class="nav-item" data-section="skills">
+                <span class="icon">ኇ36;</span>Skills
+            </button>
+            <button class="nav-item" data-section="projects">
+                <span class="icon">ኁ88;</span>Projects
+            </button>
+            <button class="nav-item" data-section="usage">
+                <span class="icon">ኂ00;</span>Usage
+            </button>
+            <button class="nav-item" data-section="telegram">
+                <span class="icon">馓;</span>Telegram
+            </button>
+            <button class="nav-item" data-section="messages">
+                <span class="icon">ኁ72;</span>Chat
+            </button>
         </nav>
     </div>
-    <div class="toast" id="toast"></div>
+
+    <div class="toast-container" id="toast-container"></div>
     <script src="/js/dashboard.js"></script>
 </body>
 </html>
