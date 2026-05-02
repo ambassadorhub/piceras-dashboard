@@ -35,7 +35,7 @@ _Curated knowledge about Bass and Piceras Group. Updated as I learn._
 ### P0 — Urgent / Blocking
 - **Livefully sponsor licence:** DBS address update needed for UKVI application. Blocking staff visa transfers from In-House Care.
 - **In-House Care dissolution:** Accountant failures: missed HMRC filings + penalties. Needs resolution before dissolution.
-- **AI Tool Guru:** Site live on Vercel. SendGrid verified and working. Lexington theme ($74.50) chosen but NOT YET PURCHASED. Quinn (content) and Nova (newsletter) running autonomously. Affiliate programmes: Semrush, Jasper AI, HubSpot pending applications.
+- **AI Tool Guru:** Spam filter code committed (2026-04-29) but NOT YET deployed to Vercel. SendGrid verified and working. Lexington theme **PURCHASED** by Bass on 2026-04-29 ($119.40 with LEX50). GitHub repo URL from Polar still needed before I can install. Quinn (content) and Nova (newsletter) running autonomously. Affiliate programmes: Semrush, Jasper AI, HubSpot pending applications.
 
 ### P1 — Important / In Progress
 - **Unison Healthcare:** Philippines-to-UK EOR pipeline being built. No active blocker.
@@ -55,6 +55,7 @@ _Curated knowledge about Bass and Piceras Group. Updated as I learn._
 - **SendGrid:** Verified and operational for contact form (2026-04-27)
 - **AI Tool Guru site migration:** WordPress to Astro + Vercel complete (2026-04-26)
 - **ConvertKit newsletter:** API integrated, signup working (2026-04-27)
+- **Contact form spam filter:** Honeypot + keyword filter added (committed 2026-04-29, not yet deployed)
 
 ## Wealth & Financial Context
 
@@ -104,6 +105,14 @@ _Curated knowledge about Bass and Piceras Group. Updated as I learn._
 ## Email
 
 - Primary email: ambassador.workspace@gmail.com (Gmail) — reinstated by Google on 2026-03-24 after suspension
+
+## Domain Registration
+
+- **Primary registrar:** Namecheap (main domain storage)
+- **Secondary/legacy:** 123reg (old registrar, domains being transferred to Namecheap as needed)
+- Most domains now transferred to Namecheap as of 2026
+- DNS management done in Namecheap dashboard
+- TTL options in Namecheap: Automatic, 30 minutes, or 1 hour (no custom 300 option)
 
 ## Tesco Shopping Group
 - **Purpose:** Household shopping list management with Sam (Bass's wife). Items mentioned here are automatically captured into a structured shopping list for manual checkout on Tesco.com.
