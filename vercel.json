@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/**/*.py", "use": "@vercel/python" },
+    { "src": "public/**/*", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/health", "dest": "/api/health.py" },
+    { "src": "/api/agents", "dest": "/api/agents.py" },
+    { "src": "/api/skills", "dest": "/api/skills.py" },
+    { "src": "/api/projects", "dest": "/api/projects.py" },
+    { "src": "/api/usage", "dest": "/api/usage.py" },
+    { "src": "/api/telegram/chats", "dest": "/api/telegram.py" },
+    { "src": "/api/telegram/messages", "dest": "/api/telegram.py" },
+    { "src": "/api/telegram/send", "dest": "/api/telegram.py" },
+    { "src": "/api/openclaw/chat", "dest": "/api/openclaw.py" },
+    { "src": "/api/openclaw/sessions", "dest": "/api/openclaw.py" },
+    { "src": "/api/(.*)", "dest": "/api/health.py" },
+    { "src": "/(.*)", "dest": "/public/index.html" }
+  ],
+  "env": {
+    "TELEGRAM_BOT_TOKEN": "@telegram-bot-token",
+    "DASHBOARD_AUTH_PASSWORD": "@dashboard-auth-password",
+    "OPENCLAW_API_URL": "http://localhost:8080"
+  }
+}
