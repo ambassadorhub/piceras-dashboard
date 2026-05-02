@@ -164,7 +164,8 @@ class Dashboard {
         const knownAgents = [
             { id: 'ollie', name: 'Ollie', role: 'Strategic Partner', status: 'online', currentTask: 'Dashboard build', model: 'ollama/kimi-k2.6:cloud', avatar: '&#129417;' },
             { id: 'quinn', name: 'Quinn', role: 'Content Lead', status: 'online', currentTask: 'AI Tool Guru pipeline', model: 'ollama/minimax-m2.7:cloud', avatar: '&#128220;' },
-            { id: 'nova', name: 'Nova', role: 'Newsletter Curator', status: 'idle', currentTask: 'Newsletter draft ready', model: 'ollama/gemma4:31b-cloud', avatar: '&#128240;' }
+            { id: 'nova', name: 'Nova', role: 'Newsletter Curator', status: 'idle', currentTask: 'Newsletter draft ready', model: 'ollama/gemma4:31b-cloud', avatar: '&#128240;' },
+            { id: 'tess', name: 'Tess', role: 'QA Agent', status: 'idle', currentTask: 'Awaiting deployment', model: 'browser-tool', avatar: '&#128270;' }
         ];
         document.getElementById('agent-grid').innerHTML = knownAgents.map(agent => `
             <div class="agent-card">
