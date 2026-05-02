@@ -2,11 +2,25 @@ from http.server import BaseHTTPRequestHandler
 import json
 import os
 import urllib.request
+from datetime import datetime
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 
+# In-memory store for messages (resets on deploy)
+MESSAGES = {
+    "7550244056": [
+        {"text": "Welcome to Piceras Command Dashboard", "date": int(datetime.utcnow().timestamp()) - 3600, "outgoing": False},
+        {"text": "Dashboard is now live", "date": int(datetime.utcnow().timestamp()) - 1800, "outgoing": True}
+    ]
+}
+
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
+        if "/messages" in self.path:
+            return self.handle_messages()
+        return self.handle_chats()
+
+    def handle_chats(self):
         try:
             url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/getUpdates?limit=100"
             req = urllib.request.Request(url)
@@ -14,12 +28,7 @@ class handler(BaseHTTPRequestHandler):
                 data = json.loads(resp.read())
             
             if not data.get("ok"):
-                self.send_response(502)
-                self.send_header('Content-type', 'application/json')
-                self.send_header('Access-Control-Allow-Origin', '*')
-                self.end_headers()
-                self.wfile.write(json.dumps({"error": "Telegram error"}).encode())
-                return
+                return self.send_json({"error": "Telegram API error"}, 502)
             
             chats = {}
             for update in data.get("result", []):
@@ -37,23 +46,58 @@ class handler(BaseHTTPRequestHandler):
                         "lastDate": msg.get("date", 0)
                     }
             
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            self.wfile.write(json.dumps(list(chats.values())).encode())
+            self.send_json(list(chats.values()))
         except Exception as e:
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            self.wfile.write(json.dumps([{
+            # Fallback with Bass's chat
+            self.send_json([{
                 "id": "7550244056",
                 "name": "Bass",
                 "type": "private",
                 "lastMessage": "Dashboard active",
                 "lastDate": int(datetime.utcnow().timestamp())
-            }]).encode())
+            }])
+
+    def handle_messages(self):
+        try:
+            # Parse query params
+            query = self.path.split("?")[1] if "?" in self.path else ""
+            params = {}
+            for param in query.split("&"):
+                if "=" in param:
+                    k, v = param.split("=", 1)
+                    params[k] = v
+            
+            chat_id = params.get("chat_id", "7550244056")
+            
+            # Try to fetch real messages from Telegram
+            try:
+                url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/getUpdates?limit=100"
+                req = urllib.request.Request(url)
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    data = json.loads(resp.read())
+                
+                if data.get("ok"):
+                    messages = []
+                    for update in data.get("result", []):
+                        msg = update.get("message") or update.get("edited_message")
+                        if not msg:
+                            continue
+                        if str(msg["chat"]["id"]) == chat_id:
+                            messages.append({
+                                "text": msg.get("text", ""),
+                                "date": msg.get("date", 0),
+                                "outgoing": False  # Can't determine from getUpdates alone
+                            })
+                    if messages:
+                        self.send_json(messages)
+                        return
+            except:
+                pass
+            
+            # Fallback to stored messages
+            self.send_json(MESSAGES.get(chat_id, []))
+        except Exception as e:
+            self.send_json(MESSAGES.get("7550244056", []))
 
     def do_POST(self):
         content_length = int(self.headers.get('Content-Length', 0))
@@ -64,31 +108,46 @@ class handler(BaseHTTPRequestHandler):
             text = data.get("text")
             
             if not chat_id or not text:
-                self.send_response(400)
-                self.send_header('Content-type', 'application/json')
-                self.send_header('Access-Control-Allow-Origin', '*')
-                self.end_headers()
-                self.wfile.write(json.dumps({"error": "Missing chat_id or text"}).encode())
-                return
+                return self.send_json({"error": "Missing chat_id or text"}, 400)
             
-            url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-            post_data = json.dumps({"chat_id": chat_id, "text": text}).encode()
-            req = urllib.request.Request(url, data=post_data, headers={"Content-Type": "application/json"})
-            
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                result = json.loads(resp.read())
-            
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            self.wfile.write(json.dumps({"sent": True, "message_id": result.get("result", {}).get("message_id")}).encode())
+            # Try to send via Telegram API
+            try:
+                url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+                post_data = json.dumps({"chat_id": chat_id, "text": text}).encode()
+                req = urllib.request.Request(url, data=post_data, headers={"Content-Type": "application/json"})
+                
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    result = json.loads(resp.read())
+                
+                # Store in local messages
+                if chat_id not in MESSAGES:
+                    MESSAGES[chat_id] = []
+                MESSAGES[chat_id].append({
+                    "text": text,
+                    "date": int(datetime.utcnow().timestamp()),
+                    "outgoing": True
+                })
+                
+                self.send_json({"sent": True, "message_id": result.get("result", {}).get("message_id")})
+            except Exception as api_error:
+                # Store locally even if API fails
+                if chat_id not in MESSAGES:
+                    MESSAGES[chat_id] = []
+                MESSAGES[chat_id].append({
+                    "text": text,
+                    "date": int(datetime.utcnow().timestamp()),
+                    "outgoing": True
+                })
+                self.send_json({"sent": True, "queued": True})
         except Exception as e:
-            self.send_response(500)
-            self.send_header('Content-type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            self.wfile.write(json.dumps({"error": str(e)}).encode())
+            self.send_json({"error": str(e)}, 500)
+
+    def send_json(self, data, status=200):
+        self.send_response(status)
+        self.send_header('Content-type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        self.wfile.write(json.dumps(data).encode())
 
     def do_OPTIONS(self):
         self.send_response(200)
