@@ -498,3 +498,4 @@ class Dashboard {
 }
 
 const dashboard = new Dashboard();
+// Cache bust v3
