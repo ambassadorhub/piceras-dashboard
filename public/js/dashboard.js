@@ -405,27 +405,42 @@ class Dashboard {
     async sendTelegramMessage() {
         const input = document.getElementById('telegram-input');
         const text = input.value.trim();
-        if (!text || !this.currentChat) return;
+        if (!text) {
+            this.showToast('Type a message first');
+            return;
+        }
+        if (!this.currentChat) {
+            this.showToast('Select a chat first');
+            return;
+        }
         
         const container = document.getElementById('telegram-messages');
-        container.innerHTML += `
-            <div class="message outgoing">
-                ${text}
-                <div class="message-time">${new Date().toLocaleTimeString()}</div>
-            </div>
-        `;
+        // Remove empty state if present
+        const emptyState = container.querySelector('.empty-state');
+        if (emptyState) emptyState.remove();
+        
+        const time = new Date().toLocaleTimeString();
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message outgoing';
+        msgDiv.innerHTML = `${text}<div class="message-time">${time}</div>`;
+        container.appendChild(msgDiv);
         container.scrollTop = container.scrollHeight;
         input.value = '';
         
         try {
-            await fetch(`${API_BASE}/telegram/send`, {
+            const res = await fetch(`${API_BASE}/telegram/send`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ chat_id: this.currentChat, text })
             });
-            this.showToast('Message sent');
+            const data = await res.json();
+            if (data.sent) {
+                this.showToast('✓ Message sent');
+            } else {
+                this.showToast('Failed to send: ' + (data.error || 'Unknown error'));
+            }
         } catch (e) {
-            this.showToast('Message queued');
+            this.showToast('Network error - message queued');
         }
     }
 
