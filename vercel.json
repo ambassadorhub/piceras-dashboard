@@ -17,10 +17,5 @@
     { "src": "/api/openclaw/sessions", "dest": "/api/openclaw.py" },
     { "src": "/api/(.*)", "dest": "/api/health.py" },
     { "src": "/(.*)", "dest": "/public/index.html" }
-  ],
-  "env": {
-    "TELEGRAM_BOT_TOKEN": "@telegram-bot-token",
-    "DASHBOARD_AUTH_PASSWORD": "@dashboard-auth-password",
-    "OPENCLAW_API_URL": "http://localhost:8080"
-  }
+  ]
 }
