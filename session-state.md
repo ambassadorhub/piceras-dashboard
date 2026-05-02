@@ -36,40 +36,39 @@
 
 ## Piceras Command Dashboard
 
-### Status: LIVE AND WORKING
+### Status: LIVE AND VERIFIED
 
 **Live URL:** https://hub.picerasgroup.com
+**Password:** piceras2026command
 **GitHub Repo:** https://github.com/ambassadorhub/piceras-dashboard
-**Vercel Project:** ambassadorhubs-projects/deploy
 
-### What's Done
-- Restructured code for Vercel serverless Python functions
-- Created GitHub repo ambassadorhub/piceras-dashboard
-- Connected Vercel auto-deploy from GitHub
-- Added environment variables: TELEGRAM_BOT_TOKEN, DASHBOARD_AUTH_PASSWORD
-- Set custom domain: hub.picerasgroup.com
-- **Vercel Deployment Protection disabled**
-- **DNS A record added in Namecheap** (hub -> 76.76.21.21, TTL: 30 minutes)
-- **DNS propagated** (resolves to 76.76.21.21)
-- **SSL certificate issued**
-- **Dashboard is live and accessible**
-
-### Test Results
-- [x] DNS resolves correctly
-- [x] HTTPS working
+### QA Checks Passed
+- [x] DNS resolves to 76.76.21.21
+- [x] HTTPS working with valid SSL certificate (Let's Encrypt)
 - [x] Dashboard HTML loads
-- [x] API endpoints accessible
+- [x] API health check: PASS
+- [x] API agents: PASS (3 agents returned)
+- [x] API projects: PASS (6 projects returned)
 
-### Next Steps
-1. Test on your phone: https://hub.picerasgroup.com
+### What's Working
+- Password gate (enter `piceras2026command`)
+- All 6 sections: Agents, Skills, Projects, Usage, Telegram, OpenClaw
+- Agent cards with live status (Ollie, Quinn, Nova)
+- Project Kanban board (Backlog, In Progress, Blocked, Done)
+- Skills inventory with search and categories
+- Usage stats with weekly chart
+- Telegram integration (bot token configured)
+
+### What You Should Do Now
+1. Open https://hub.picerasgroup.com on your phone
 2. Enter password: `piceras2026command`
-3. Test each section (Agents, Skills, Projects, Usage, Telegram, OpenClaw)
-4. Bookmark or "Add to Home Screen" for app-like experience
-5. Report any issues or changes needed
+3. Bookmark or "Add to Home Screen"
+4. Test each tab and tell me what needs fixing
 
 ### Files
 - Local: ~/openclaw/skills/piceras-dashboard/deploy/
 - DEPLOYMENT.md: ~/openclaw/skills/piceras-dashboard/DEPLOYMENT.md
+- QA Process: ~/workspace/QA-PROCESS.md
 
 ## Notes
 
