@@ -10,6 +10,8 @@ class Dashboard {
         this.agents = [];
         this.projects = [];
         this.messages = [];
+        this.telegramMessages = {};
+        this.telegramRefreshInterval = null;
         this.init();
     }
 
@@ -79,7 +81,21 @@ class Dashboard {
         if (section === 'skills') this.loadSkills();
         if (section === 'projects') this.loadProjects();
         if (section === 'usage') this.loadUsage();
-        if (section === 'telegram') this.loadTelegramChats();
+        if (section === 'telegram') {
+            this.loadTelegramChats();
+            // Start auto-refresh for messages
+            this.telegramRefreshInterval = setInterval(() => {
+                if (this.currentChat) {
+                    this.refreshTelegramMessages(this.currentChat);
+                }
+            }, 3000);
+        } else {
+            // Stop auto-refresh when leaving telegram section
+            if (this.telegramRefreshInterval) {
+                clearInterval(this.telegramRefreshInterval);
+                this.telegramRefreshInterval = null;
+            }
+        }
         if (section === 'messages') this.loadMessages();
     }
 
@@ -391,21 +407,53 @@ class Dashboard {
     renderTelegramMessages(messages) {
         const container = document.getElementById('telegram-messages');
         if (!messages.length) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">💬</div>
-                    <p>No messages yet</p>
-                </div>
-            `;
+            if (!container.querySelector('.message')) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💬</div>
+                        <p>No messages yet</p>
+                    </div>
+                `;
+            }
             return;
         }
-        container.innerHTML = messages.map(m => `
-            <div class="message ${m.outgoing ? 'outgoing' : 'incoming'}">
-                ${m.text}
-                <div class="message-time">${new Date(m.date * 1000).toLocaleTimeString()}</div>
-            </div>
-        `).join('');
+        
+        // Remove empty state if present
+        const emptyState = container.querySelector('.empty-state');
+        if (emptyState) emptyState.remove();
+        
+        // Get existing message texts for deduplication
+        const existingTexts = new Set();
+        container.querySelectorAll('.message').forEach(el => {
+            existingTexts.add(el.textContent.trim());
+        });
+        
+        // Append only new messages
+        messages.forEach(m => {
+            const msgKey = m.text.trim();
+            if (!existingTexts.has(msgKey)) {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `message ${m.outgoing ? 'outgoing' : 'incoming'}`;
+                msgDiv.innerHTML = `${m.text}<div class="message-time">${new Date(m.date * 1000).toLocaleTimeString()}</div>`;
+                container.appendChild(msgDiv);
+            }
+        });
+        
         container.scrollTop = container.scrollHeight;
+    }
+
+    async refreshTelegramMessages(chatId) {
+        try {
+            const res = await fetch(`${API_BASE}/telegram/messages?chat_id=${chatId}`);
+            const messages = await res.json();
+            // Only re-render if there are new messages
+            const currentCount = document.getElementById('telegram-messages')?.querySelectorAll('.message').length || 0;
+            if (messages.length > currentCount) {
+                this.renderTelegramMessages(messages);
+            }
+        } catch (e) {
+            // Silently fail on refresh
+        }
     }
 
     async sendTelegramMessage() {
@@ -425,12 +473,7 @@ class Dashboard {
         const emptyState = container.querySelector('.empty-state');
         if (emptyState) emptyState.remove();
         
-        const time = new Date().toLocaleTimeString();
-        const msgDiv = document.createElement('div');
-        msgDiv.className = 'message outgoing';
-        msgDiv.innerHTML = `${text}<div class="message-time">${time}</div>`;
-        container.appendChild(msgDiv);
-        container.scrollTop = container.scrollHeight;
+        // Don't append locally — wait for refresh to show sent message
         input.value = '';
         
         try {

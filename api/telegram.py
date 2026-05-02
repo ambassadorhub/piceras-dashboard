@@ -69,7 +69,10 @@ class handler(BaseHTTPRequestHandler):
             
             chat_id = params.get("chat_id", "7550244056")
             
-            # Try to fetch real messages from Telegram
+            # Start with locally stored messages (outgoing + cached incoming)
+            all_messages = list(MESSAGES.get(chat_id, []))
+            
+            # Fetch real messages from Telegram and merge
             try:
                 url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/getUpdates?limit=100"
                 req = urllib.request.Request(url)
@@ -77,25 +80,27 @@ class handler(BaseHTTPRequestHandler):
                     data = json.loads(resp.read())
                 
                 if data.get("ok"):
-                    messages = []
                     for update in data.get("result", []):
                         msg = update.get("message") or update.get("edited_message")
                         if not msg:
                             continue
                         if str(msg["chat"]["id"]) == chat_id:
-                            messages.append({
-                                "text": msg.get("text", ""),
-                                "date": msg.get("date", 0),
-                                "outgoing": False  # Can't determine from getUpdates alone
-                            })
-                    if messages:
-                        self.send_json(messages)
-                        return
+                            # Check if message already exists in local store
+                            msg_date = msg.get("date", 0)
+                            msg_text = msg.get("text", "")
+                            exists = any(m.get("date") == msg_date and m.get("text") == msg_text for m in all_messages)
+                            if not exists:
+                                all_messages.append({
+                                    "text": msg_text,
+                                    "date": msg_date,
+                                    "outgoing": False
+                                })
             except:
                 pass
             
-            # Fallback to stored messages
-            self.send_json(MESSAGES.get(chat_id, []))
+            # Sort by date and return
+            all_messages.sort(key=lambda m: m.get("date", 0))
+            self.send_json(all_messages)
         except Exception as e:
             self.send_json(MESSAGES.get("7550244056", []))
 
