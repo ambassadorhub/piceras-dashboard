@@ -4,9 +4,28 @@
   "private": true,
   "scripts": {
     "build": "echo 'Static site - no build needed'",
-    "deploy": "vercel --prod"
+    "deploy": "vercel --prod",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui"
   },
   "engines": {
-    "node": "24.x"
+    "node": "22.x"
+  },
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ambassadorhub/piceras-dashboard.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ambassadorhub/piceras-dashboard/issues"
+  },
+  "homepage": "https://github.com/ambassadorhub/piceras-dashboard#readme",
+  "dependencies": {
+    "playwright": "^1.59.1"
   }
 }
