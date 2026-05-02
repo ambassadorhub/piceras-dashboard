@@ -139,8 +139,13 @@ class Dashboard {
             this.renderAgentsFromMemory();
             return;
         }
-        grid.innerHTML = this.agents.map(agent => `
-            <div class="agent-card" data-id="${agent.id}">
+        // Clear existing to prevent duplicates
+        grid.innerHTML = '';
+        this.agents.forEach(agent => {
+            const card = document.createElement('div');
+            card.className = 'agent-card';
+            card.dataset.id = agent.id;
+            card.innerHTML = `
                 <div class="agent-header">
                     <div class="agent-avatar ${agent.status}">${agent.avatar || agent.name[0]}</div>
                     <div class="agent-info">
@@ -150,8 +155,9 @@ class Dashboard {
                 </div>
                 <div class="agent-task">${agent.currentTask || 'Idle'}</div>
                 <span class="agent-model">${agent.model || 'Unknown'}</span>
-            </div>
-        `).join('');
+            `;
+            grid.appendChild(card);
+        });
     }
 
     renderAgentsFromMemory() {
