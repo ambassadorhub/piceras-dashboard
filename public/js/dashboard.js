@@ -142,7 +142,7 @@ class Dashboard {
         grid.innerHTML = this.agents.map(agent => `
             <div class="agent-card" data-id="${agent.id}">
                 <div class="agent-header">
-                    <div class="agent-avatar ${agent.status}">${agent.avatar || '��'}</div>
+                    <div class="agent-avatar ${agent.status}">${agent.avatar || agent.name[0]}</div>
                     <div class="agent-info">
                         <div class="agent-name">${agent.name}</div>
                         <div class="agent-role">${agent.role}</div>
@@ -157,15 +157,15 @@ class Dashboard {
     renderAgentsFromMemory() {
         const knownAgents = [
             { id: 'ollie', name: 'Ollie', role: 'CEO / Chief of Staff', status: 'online', currentTask: 'Dashboard build', model: 'ollama/kimi-k2.6:cloud', avatar: 'O' },
-            { id: 'quinn', name: 'Quinn', role: 'Content Director', status: 'online', currentTask: 'AI Tool Guru pipeline', model: 'ollama/minimax-m2.7:cloud', avatar: 'Q' },
-            { id: 'nova', name: 'Nova', role: 'Growth Marketer', status: 'idle', currentTask: 'Newsletter draft ready', model: 'ollama/minimax-m2.7:cloud', avatar: 'N' },
-            { id: 'ralph', name: 'Ralph', role: 'Lead Developer', status: 'idle', currentTask: 'Awaiting assignment', model: 'ollama/minimax-m2.7:cloud', avatar: 'R' },
-            { id: 'archie', name: 'Archie', role: 'Technical Architect', status: 'idle', currentTask: 'Awaiting assignment', model: 'ollama/kimi-k2.6:cloud', avatar: 'A' },
-            { id: 'sage', name: 'Sage', role: 'Research Analyst', status: 'idle', currentTask: 'Awaiting assignment', model: 'ollama/gemma4:31b-cloud', avatar: 'S' },
-            { id: 'vera', name: 'Vera', role: 'Compliance Officer', status: 'online', currentTask: 'CQC oversight', model: 'ollama/kimi-k2.6:cloud', avatar: 'V' },
-            { id: 'iris', name: 'Iris', role: 'Finance & Deals', status: 'idle', currentTask: 'Awaiting assignment', model: 'ollama/gemma4:31b-cloud', avatar: 'I' },
-            { id: 'tess', name: 'Tess', role: 'QA Lead', status: 'idle', currentTask: 'Awaiting deployment', model: 'browser-tool', avatar: 'T' },
-            { id: 'max', name: 'Max', role: 'Operations Manager', status: 'idle', currentTask: 'Awaiting assignment', model: 'ollama/minimax-m2.7:cloud', avatar: 'M' }
+            { id: 'quinn', name: 'Quinn', role: 'Content Director', status: 'online', currentTask: 'AI Tool Guru pipeline', model: 'ollama/minimax-m2.7:cloud', avatar: 'O' },
+            { id: 'nova', name: 'Nova', role: 'Growth Marketer', status: 'idle', currentTask: 'Newsletter draft ready', model: 'ollama/minimax-m2.7:cloud', avatar: 'O' },
+            { id: 'ralph', name: 'Ralph', role: 'Lead Developer', status: 'idle', currentTask: 'Awaiting assignment', model: 'ollama/minimax-m2.7:cloud', avatar: 'O' },
+            { id: 'archie', name: 'Archie', role: 'Technical Architect', status: 'idle', currentTask: 'Awaiting assignment', model: 'ollama/kimi-k2.6:cloud', avatar: 'O' },
+            { id: 'sage', name: 'Sage', role: 'Research Analyst', status: 'idle', currentTask: 'Awaiting assignment', model: 'ollama/gemma4:31b-cloud', avatar: 'O' },
+            { id: 'vera', name: 'Vera', role: 'Compliance Officer', status: 'online', currentTask: 'CQC oversight', model: 'ollama/kimi-k2.6:cloud', avatar: 'O' },
+            { id: 'iris', name: 'Iris', role: 'Finance & Deals', status: 'idle', currentTask: 'Awaiting assignment', model: 'ollama/gemma4:31b-cloud', avatar: 'O' },
+            { id: 'tess', name: 'Tess', role: 'QA Lead', status: 'idle', currentTask: 'Awaiting deployment', model: 'browser-tool', avatar: 'O' },
+            { id: 'max', name: 'Max', role: 'Operations Manager', status: 'idle', currentTask: 'Awaiting assignment', model: 'ollama/minimax-m2.7:cloud', avatar: 'O' }
         ];
         this.agents = knownAgents;
         this.renderAgents();
