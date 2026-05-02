@@ -1,5 +1,5 @@
 const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:8000' : '/api';
-const DASHBOARD_PASSWORD_HASH = '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8';
+const DASHBOARD_PASSWORD_HASH = '10d9751839610657a22dd9fa76d13f6f037cbe68189627638a9abbd724c2e6c6';
 
 class Dashboard {
     constructor() {
